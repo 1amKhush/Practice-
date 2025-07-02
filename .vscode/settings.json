@@ -1,0 +1,15 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3001,
+            "driver": "PostgreSQL",
+            "name": "PG Local",
+            "password": "@khush99",
+            "database": "Demo",
+            "username": "postgres",
+            "connectionTimeout": 30
+        }
+    ]
+}

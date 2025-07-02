@@ -1,14 +1,17 @@
 package ws
 
 import (
+	
 	"fmt"
 	"log"
 	"math/rand"
+	"net"
 	"net/http"
-	"time"
+	
+	"strings"
 
+	"github.com/1amKhush/Practice-/tracker"
 	"github.com/gorilla/websocket"
-	"Practice-/tracker"
 )
 
 var upgrader = websocket.Upgrader{
@@ -18,11 +21,27 @@ var upgrader = websocket.Upgrader{
 }
 
 func generatePeerID() string {
-	return fmt.Sprintf("peer-%d", rand.Intn(1000000))
+	id := rand.Intn(1000000)
+	return fmt.Sprint(id)
 }
 
+func peerIPAddr(r *http.Request) (string) {
+	host, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		log.Println("Could not fetch IP of connected PEER")
+	}
+
+	return fmt.Sprintf("Peer IP - %s", host)
+}
+
+
+
 func HandleWebSocket(t *tracker.Tracker) http.HandlerFunc {
+
+	
+
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
 			log.Println("Connection error:", err)
@@ -31,18 +50,27 @@ func HandleWebSocket(t *tracker.Tracker) http.HandlerFunc {
 		defer conn.Close()
 
 		peerID := generatePeerID()
-		t.AddPeer(peerID)
-		log.Println("New peer connected:", peerID)
-		conn.WriteMessage(websocket.TextMessage, []byte("Your peer ID: "+peerID))
+		peerIP := peerIPAddr(r)
 
-		// Send current peer list to the new peer
+		_, msg, err := conn.ReadMessage()
+		if err != nil {
+			log.Println("Error reading peer name:", err)
+			return
+		}
+		name := strings.TrimSpace(string(msg))
+
+		t.AddPeer(peerID)
+		log.Printf("-> '%s' connected with ID: %s", name, peerID)
+		conn.WriteMessage(websocket.TextMessage, []byte("Your peer ID: "+peerID))
+		conn.WriteMessage(websocket.TextMessage, []byte(peerIP))
+
 		peerList := t.ListPeers()
 		conn.WriteMessage(websocket.TextMessage, []byte("Connected peers: "+fmt.Sprint(peerList)))
 
 		for {
 			_, _, err := conn.ReadMessage()
 			if err != nil {
-				log.Println("Peer disconnected:", peerID)
+				log.Printf("-> '%s' disconnected: %s", name, peerID)
 				t.RemovePeer(peerID)
 				break
 			}
