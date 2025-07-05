@@ -1,9 +1,14 @@
 package tracker
 
+import (
+	"github.com/1amKhush/Practice-/db"
+)
+
 
 type Tracker struct {
 	peers map[string]bool
 }
+
 
 func NewTracker() *Tracker {
 	return &Tracker{
@@ -11,13 +16,19 @@ func NewTracker() *Tracker {
 	}
 }
 
-func (t *Tracker) AddPeer(peerID string) {
+func (t *Tracker) AddPeer(peerID, name, ip string) error {
 	t.peers[peerID] = true
+
+	_, err := db.InsertPeer(db.DB, peerID, name, ip)
+	return err
 }
+
 
 func (t *Tracker) RemovePeer(peerID string) {
 	delete(t.peers, peerID)
+	
 }
+
 
 func (t *Tracker) ListPeers() []string {
 	var list []string
@@ -26,5 +37,3 @@ func (t *Tracker) ListPeers() []string {
 	}
 	return list
 }
-
-func logNewPeer()

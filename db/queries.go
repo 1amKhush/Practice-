@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func newPeer(db *sql.DB, peerID, name, IP string) (uuid.UUID, error){
+func InsertPeer (db *sql.DB, peerID, name, IP string) (uuid.UUID, error){
 	var id uuid.UUID
 
 	query := 

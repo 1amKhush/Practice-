@@ -7,9 +7,10 @@ import (
 	"math/rand"
 	"net"
 	"net/http"
-	
+
 	"strings"
 
+	
 	"github.com/1amKhush/Practice-/tracker"
 	"github.com/gorilla/websocket"
 )
@@ -31,14 +32,13 @@ func peerIPAddr(r *http.Request) (string) {
 		log.Println("Could not fetch IP of connected PEER")
 	}
 
-	return fmt.Sprintf("Peer IP - %s", host)
+	return fmt.Sprint(host)
 }
 
 
 
 func HandleWebSocket(t *tracker.Tracker) http.HandlerFunc {
 
-	
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -59,7 +59,10 @@ func HandleWebSocket(t *tracker.Tracker) http.HandlerFunc {
 		}
 		name := strings.TrimSpace(string(msg))
 
-		t.AddPeer(peerID)
+		if err := t.AddPeer(peerID, name, peerIP); err != nil {
+    		log.Println("DB error saving peer:", err)
+		}
+
 		log.Printf("-> '%s' connected with ID: %s", name, peerID)
 		conn.WriteMessage(websocket.TextMessage, []byte("Your peer ID: "+peerID))
 		conn.WriteMessage(websocket.TextMessage, []byte(peerIP))
