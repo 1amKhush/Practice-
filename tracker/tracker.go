@@ -1,6 +1,7 @@
 package tracker
 
 import (
+	"time"
 	"github.com/1amKhush/Practice-/db"
 )
 
@@ -26,7 +27,7 @@ func (t *Tracker) AddPeer(peerID, name, ip string) error {
 
 func (t *Tracker) RemovePeer(peerID string) {
 	delete(t.peers, peerID)
-	
+	_ = db.MarkPeerOffline(db.DB, peerID, time.Now())
 }
 
 

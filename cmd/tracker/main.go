@@ -1,13 +1,13 @@
 package main
 
 import (
-	"fmt"
+	"context"
 	"log"
-	"net/http"
+	
 
 	"github.com/1amKhush/Practice-/db"
+	"github.com/1amKhush/Practice-/p2p"
 	"github.com/1amKhush/Practice-/tracker"
-	"github.com/1amKhush/Practice-/webSocket"
 	"github.com/joho/godotenv"
 )
 
@@ -19,10 +19,15 @@ func main() {
 	}
 	db.InitDB()
 
-	t := tracker.NewTracker()
+	h,err := p2p.NewHost(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	http.HandleFunc("/ws", ws.HandleWebSocket(t))
-	
-	fmt.Println("-> WebSocket server started on ws://localhost:8080/ws")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	t := tracker.NewTracker()
+	log.Println("-> Tracker Initialized")
+
+	p2p.RegisterProtocol(h,t)
+
+	select{}
 }
