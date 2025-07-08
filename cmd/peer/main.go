@@ -72,6 +72,5 @@ func main() {
 	}
 
 	// The connection stays alive, or can be manually closed
-	s.Close()
-	h.Close()
+	select{}
 }

@@ -21,6 +21,7 @@ func ShortenPeerID(id string) string {
 const TrackerProtocol = "/tracker/1.0.0"
 
 // yeh protocol 1.PeerID assign karta hai
+//
 //	    	    2.peer name(input) read karta hai
 //	    	    3.Peer ko DB mein store karta hai
 //			    4.is_online state ko track karta hai
@@ -40,18 +41,18 @@ func RegisterProtocol(h host.Host, t *tracker.Tracker) {
 
 		remoteAddr := s.Conn().RemoteMultiaddr().String()
 
-		//shortPeerID := ShortenPeerID(peerID)
+		shortPeerID := ShortenPeerID(peerID)
 
-		// go func() {
-		// 	for {
-		// 		_, err := r.ReadString('\n')
-		// 		if err != nil {
-		// 			log.Printf("%s (%v) has disconnected", name, shortPeerID)
-		// 			t.RemovePeer(peerID)
-		// 			return
-		// 		}
-		// 	}
-		// }()
+		go func() {
+			for {
+				_, err := r.ReadString('\n')
+				if err != nil {
+					log.Printf("%s (%v) has disconnected", name, shortPeerID)
+					t.RemovePeer(peerID)
+					return
+				}
+			}
+		}()
 
 		var ip string
 		parts := strings.Split(remoteAddr, "/")
@@ -70,8 +71,7 @@ func RegisterProtocol(h host.Host, t *tracker.Tracker) {
 
 		log.Printf("New peer: %s (%s)", name, peerID)
 
-		s.Write([]byte(fmt.Sprintf("Hello %s!\n", name)))
-
-		s.Write([]byte(fmt.Sprintf("Connected Peers: %v\n", t.ListPeers())))
+		s.Write([]byte(fmt.Sprintf("Welcome %s!\n", name)))
+		s.Write([]byte(fmt.Sprintf("Connected peers: %v\n", t.ListPeers())))
 	})
 }
