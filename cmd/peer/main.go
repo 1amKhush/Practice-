@@ -7,12 +7,13 @@ import (
 	"log"
 	"os"
 	"strings"
+	
 
 	"github.com/libp2p/go-libp2p"
-	
+
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
-	
+
 	ma "github.com/multiformats/go-multiaddr"
 )
 
@@ -55,9 +56,9 @@ func main() {
 		log.Fatal("Stream error:", err)
 	}
 
-	// -- STEP 4: Send peer name 
+	// -- STEP 4: Send peer name
 	peerName := fmt.Sprintln("Khushvendra")
-	
+
 	msg := fmt.Sprintf("%s\n", peerName)
 	_, _ = s.Write([]byte(msg))
 
@@ -66,11 +67,25 @@ func main() {
 	for {
 		line, err := r.ReadString('\n')
 		if err != nil {
+			fmt.Println("[CLIENT] Disconnected from tracker.")
 			break
 		}
 		fmt.Print("[TRACKER] ", line)
 	}
 
-	// The connection stays alive, or can be manually closed
-	select{}
+	// STEP 6: Send periodic heartbeats
+	// go func() {
+	// 	for {
+	// 		_, err := s.Write([]byte("ping\n"))
+	// 		if err != nil {
+	// 			fmt.Println("[CLIENT] Failed to send ping:", err)
+	// 			return
+	// 		}
+	// 		fmt.Println("[CLIENT] Ping sent.")
+	// 		time.Sleep(10 * time.Second) // send ping every 10 seconds
+	// 	}
+	// }()
+
+	// STEP 7: Keep alive
+	select {}
 }

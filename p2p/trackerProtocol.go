@@ -27,7 +27,7 @@ const TrackerProtocol = "/tracker/1.0.0"
 //			    4.is_online state ko track karta hai
 func RegisterProtocol(h host.Host, t *tracker.Tracker) {
 	h.SetStreamHandler(TrackerProtocol, func(s network.Stream) {
-		defer s.Close()
+		// defer s.Close()
 
 		peerID := s.Conn().RemotePeer().String()
 		r := bufio.NewReader(s)
@@ -51,6 +51,12 @@ func RegisterProtocol(h host.Host, t *tracker.Tracker) {
 					t.RemovePeer(peerID)
 					return
 				}
+
+				// msg := strings.TrimSpace(line)
+				// if msg == "ping" {
+				// 	s.Write([]byte(fmt.Sprintf("Received from %s: %s", shortPeerID, msg)))
+				// 	continue
+				// }
 			}
 		}()
 
