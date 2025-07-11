@@ -8,7 +8,7 @@ import (
 
 // parseCommand parses commands received from peers
 // Commands format: "COMMAND:param1:param2"
-func parseCommand(command string) (cmd, filename string, filesize int64) {
+func ParseCommand(command string) (cmd, filename string, filesize int64) {
 	parts := strings.Split(command, ":")
 	
 	if len(parts) < 1 {
@@ -31,7 +31,7 @@ func parseCommand(command string) (cmd, filename string, filesize int64) {
 }
 
 // printInstructions shows how to use the application
-func printInstructions() {
+func PrintInstructions() {
 	fmt.Println("📖 How to use Torrentium:")
 	fmt.Println()
 	fmt.Println("🔸 STEP 1: Person A types 'offer' to create a connection offer")
@@ -49,7 +49,7 @@ func printInstructions() {
 }
 
 // formatFileSize formats bytes into human readable format
-func formatFileSize(bytes int64) string {
+func FormatFileSize(bytes int64) string {
 	const unit = 1024
 	if bytes < unit {
 		return fmt.Sprintf("%d B", bytes)

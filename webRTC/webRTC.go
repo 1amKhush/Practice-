@@ -249,7 +249,7 @@ func (p *WebRTCPeer) handleCommand(command string) {
 	fmt.Printf("📨 Received command: %s\n", command)
 	
 	// Parse command
-	cmd, filename, _ := parseCommand(command)
+	cmd, filename, _ := ParseCommand(command)
 	
 	switch cmd {
 	case "REQUEST_FILE":
@@ -281,7 +281,7 @@ func (p *WebRTCPeer) handleFileData(data []byte) {
 		// Append data to our receiving buffer
 		p.receivingFileData = append(p.receivingFileData, data...)
 				// Show progress with human-readable sizes
-		fmt.Printf("📊 Received %s for %s\n", formatFileSize(int64(len(p.receivingFileData))), p.receivingFileName)
+		fmt.Printf("📊 Received %s for %s\n", FormatFileSize(int64(len(p.receivingFileData))), p.receivingFileName)
 	}
 }
 
@@ -295,7 +295,7 @@ func (p *WebRTCPeer) saveReceivedFile() {
 		return
 	}
 	
-	fmt.Printf("✅ File saved successfully: %s (%s)\n", filename, formatFileSize(int64(len(p.receivingFileData))))
+	fmt.Printf("✅ File saved successfully: %s (%s)\n", filename, FormatFileSize(int64(len(p.receivingFileData))))
 	
 	// Reset receiving state
 	p.receivingFile = false
@@ -338,7 +338,7 @@ func (p *WebRTCPeer) sendFile(filename string) {
 	}
 	fileSize := fileInfo.Size()
 
-	fmt.Printf("📤 Sending file: %s (%s)\n", filename, formatFileSize(fileSize))
+	fmt.Printf("📤 Sending file: %s (%s)\n", filename, FormatFileSize(fileSize))
 
 	// Send start command
 	startCommand := fmt.Sprintf("FILE_START:%s:%d", filename, fileSize)
@@ -368,7 +368,7 @@ func (p *WebRTCPeer) sendFile(filename string) {
 		}
 		
 		totalSent += n
-		fmt.Printf("📊 Sent %s/%s (%.1f%%)\n", formatFileSize(int64(totalSent)), formatFileSize(fileSize), float64(totalSent)/float64(fileSize)*100)
+		fmt.Printf("📊 Sent %s/%s (%.1f%%)\n", FormatFileSize(int64(totalSent)), FormatFileSize(fileSize), float64(totalSent)/float64(fileSize)*100)
 	}
 
 	// Send end command
