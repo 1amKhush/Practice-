@@ -10,6 +10,8 @@ import (
 	"github.com/1amKhush/Practice-/webRTC"
 )
 
+	peer, err := webRTC.NewWebRTCPeer()
+
 func main() {
 	fmt.Println("🔥 Torrentium - P2P File Sharing")
 	fmt.Println("==================================")
@@ -17,10 +19,10 @@ func main() {
 	fmt.Println()
 
 	// Show instructions
-	printInstructions()
+	webRTC.PrintInstructions()
 
 	// Create WebRTC peer
-	peer, err := NewWebRTCPeer()
+	// peer, err := webRTC.NewWebRTCPeer()
 	if err != nil {
 		fmt.Printf("❌ Error creating WebRTC peer: %v\n", err)
 		return
@@ -61,7 +63,7 @@ func main() {
 			return
 
 		case "help", "instructions":
-			printInstructions()
+			webRTC.PrintInstructions()
 
 		case "status":
 			if peer.IsConnected() {
